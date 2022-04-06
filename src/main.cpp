@@ -52,15 +52,6 @@ static void error_callback(int error, const char *description) {
   fprintf(stderr, "Error: %s\n", description);
 }
 
-#define BIND_GLFW_KEY_TO_INPUT_KEY(triggered_key, glfw_key, input_key) do { \
-    if (triggered_key == glfw_key) { \
-      if (action == GLFW_PRESS) \
-        input.key_down(input_key); \
-      else if (action == GLFW_RELEASE) \
-        input.key_up(input_key); \
-    } \
-  } while (0)
-
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -98,10 +89,22 @@ int main() {
   CameraTranslateCommand cmd_camera_backward{camera, CAMERA_BACKWARD};
   CameraTranslateCommand cmd_camera_left{camera, CAMERA_LEFT};
   CameraTranslateCommand cmd_camera_right{camera, CAMERA_RIGHT};
+  CameraTranslateCommand cmd_camera_up{camera, CAMERA_UP};
+  CameraTranslateCommand cmd_camera_down{camera, CAMERA_DOWN};
+  CameraRotateCommand cmd_camera_yaw_left{camera, CAMERA_YAW_LEFT};
+  CameraRotateCommand cmd_camera_yaw_right{camera, CAMERA_YAW_RIGHT};
+  CameraRotateCommand cmd_camera_pitch_up{camera, CAMERA_PITCH_UP};
+  CameraRotateCommand cmd_camera_pitch_down{camera, CAMERA_PITCH_DOWN};
   input.register_command(KEY_W, cmd_camera_forward);
   input.register_command(KEY_A, cmd_camera_left);
   input.register_command(KEY_S, cmd_camera_backward);
   input.register_command(KEY_D, cmd_camera_right);
+  input.register_command(KEY_E, cmd_camera_up);
+  input.register_command(KEY_Q, cmd_camera_down);
+  input.register_command(KEY_UP, cmd_camera_pitch_up);
+  input.register_command(KEY_DOWN, cmd_camera_pitch_down);
+  input.register_command(KEY_LEFT, cmd_camera_yaw_left);
+  input.register_command(KEY_RIGHT, cmd_camera_yaw_right);
 
 	GLFWwindow* window;
 

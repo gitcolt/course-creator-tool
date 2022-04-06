@@ -14,34 +14,34 @@ glm::mat4 Camera::get_view_matrix() const {
   return glm::lookAt(pos, pos + front, up);
 }
 
-void Camera::translate(enum CameraMovement dir) {
+void Camera::translate(enum CameraTranslationType trans_type) {
   float amt = 1.0f;
-  if (dir == CAMERA_FORWARD)
+  if (trans_type == CAMERA_FORWARD)
     pos += front * amt;
-  if (dir == CAMERA_BACKWARD)
+  if (trans_type == CAMERA_BACKWARD)
     pos -= front * amt;
-  if (dir == CAMERA_LEFT)
+  if (trans_type == CAMERA_LEFT)
     pos -= right * amt;
-  if (dir == CAMERA_RIGHT)
+  if (trans_type == CAMERA_RIGHT)
     pos += right * amt;
+  if (trans_type == CAMERA_UP)
+    pos.y += amt;
+  if (trans_type == CAMERA_DOWN)
+    pos.y -= amt;
 
   update_camera_vectors();
 }
 
-void Camera::rotate(enum CameraMovement dir) {
+void Camera::rotate(enum CameraRotationType rot_type) {
   float amt = 5.0;
-  if (dir == CAMERA_PITCH_UP)
+  if (rot_type == CAMERA_PITCH_UP)
     pitch += amt;
-  if (dir == CAMERA_PITCH_DOWN)
+  if (rot_type == CAMERA_PITCH_DOWN)
     pitch -= amt;
-  if (dir == CAMERA_YAW_LEFT)
+  if (rot_type == CAMERA_YAW_LEFT)
     yaw -= amt;
-  if (dir == CAMERA_YAW_RIGHT)
+  if (rot_type == CAMERA_YAW_RIGHT)
     yaw += amt;
-  if (dir == CAMERA_UP)
-    pos.y += amt;
-  if (dir == CAMERA_DOWN)
-    pos.y -= amt;
 
   update_camera_vectors();
 }

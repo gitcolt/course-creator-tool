@@ -6,17 +6,20 @@
 #include <glm/trigonometric.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-enum CameraMovement {
+enum CameraTranslationType {
   CAMERA_FORWARD,
   CAMERA_BACKWARD,
   CAMERA_LEFT,
   CAMERA_RIGHT,
+  CAMERA_UP,
+  CAMERA_DOWN,
+};
+
+enum CameraRotationType {
   CAMERA_PITCH_UP,
   CAMERA_PITCH_DOWN,
   CAMERA_YAW_LEFT,
   CAMERA_YAW_RIGHT,
-  CAMERA_UP,
-  CAMERA_DOWN,
 };
 
 class Camera {
@@ -35,8 +38,8 @@ class Camera {
           float pitch = 0.0f);
 
     glm::mat4 get_view_matrix() const;
-    void translate(enum CameraMovement dir);
-    void rotate(enum CameraMovement dir);
+    void translate(enum CameraTranslationType trans_type);
+    void rotate(enum CameraRotationType rot_type);
 
   private:
     void update_camera_vectors();

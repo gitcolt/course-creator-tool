@@ -9,6 +9,15 @@
 #include <queue>
 #include <utility>
 
+#define BIND_GLFW_KEY_TO_INPUT_KEY(triggered_key, glfw_key, input_key) do { \
+    if (triggered_key == glfw_key) { \
+      if (action == GLFW_PRESS) \
+        input.key_down(input_key); \
+      else if (action == GLFW_RELEASE) \
+        input.key_up(input_key); \
+    } \
+  } while (0)
+
 enum Key {
   KEY_W,
   KEY_A,
