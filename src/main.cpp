@@ -20,17 +20,17 @@ static const unsigned WINDOW_WIDTH = 640;
 static const unsigned WINDOW_HEIGHT = 480;
 
 static const std::vector<float> vertices = {
-  //  x      y     z       r     g     b
-  -0.6f, -0.4f,  0.0f,   1.0f, 0.0f, 0.0f,
-   0.6f, -0.4f,  0.0f,   0.0f, 1.0f, 0.0f,
-   0.0f,  0.6f,  0.0f,   0.0f, 0.0f, 1.0f,
+  //   x      y        z       r     g     b
+  -100.0f,  0.0f, -100.0f,   1.0f, 0.0f, 0.0f,
+  -100.0f,  0.0f,  100.0f,   0.0f, 1.0f, 0.0f,
+   100.0f,  0.0f, -100.0f,   0.0f, 0.0f, 1.0f,
 
-   1.0f,  1.0f, -1.0f,   1.0f, 0.0f, 0.0f,
-  -1.0f,  1.0f,  1.0f,   0.0f, 1.0f, 0.0f,
-   1.0f,  1.0f,  1.0f,   0.0f, 0.0f, 1.0f,
+   100.0f,  0.0f, -100.0f,   0.0f, 0.0f, 1.0f,
+  -100.0f,  0.0f,  100.0f,   0.0f, 1.0f, 0.0f,
+   100.0f,  0.0f,  100.0f,   1.0f, 0.0f, 0.0f,
 };
 
-static Camera camera{glm::vec3{0.0f, 1.0f, 5.0f}};
+static Camera camera{glm::vec3{0.0f, 6.0f, 0.0f}};
 
 static Input input{};
 
@@ -80,7 +80,7 @@ static void mouse_callback(GLFWwindow *window, double x, double y) {
 }
 
 glm::mat4 calculate_mvp(const float t) {
-  m = glm::rotate(glm::mat4{1.0f}, glm::radians(t * 30.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+  //m = glm::rotate(glm::mat4{1.0f}, glm::radians(t * 30.0f), glm::vec3(0.0f, 1.0f, 1.0f));
   return p * camera.get_view_matrix() * m;
 }
 
@@ -155,7 +155,7 @@ int main() {
 		glUseProgram(prog.gl_program);
     prog.set_uniform("mvp", (const GLfloat *)&mvp);
 
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, vert_buf.total_element_count);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

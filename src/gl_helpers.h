@@ -95,14 +95,16 @@ class Program {
 template <typename T>
 class Buffer {
   public:
-    Buffer(const Program &prog, std::vector<T> my_buffer) {
+    Buffer(const Program &prog, const std::vector<T> &verts) :
+        verts{verts},
+        total_element_count{(GLsizei)(verts.size() / (prog.stride / sizeof(T)))} {
       glGenVertexArrays(1, &vao);
       glBindVertexArray(vao);
       glGenBuffers(1, &gl_buf);
       glBindBuffer(GL_ARRAY_BUFFER, gl_buf);
       glBufferData(GL_ARRAY_BUFFER,
-          sizeof(my_buffer[0]) * my_buffer.size(),
-          my_buffer.data(),
+          sizeof(verts[0]) * verts.size(),
+          verts.data(),
           GL_STATIC_DRAW);
 
       size_t offset = 0;
@@ -124,8 +126,12 @@ class Buffer {
           sizeof(T) * verts.size(),
           verts.data(),
           GL_STATIC_DRAW);
+      total_element_count = verts.size() / (this->verts.size() / total_element_count);
+      this->verts = verts;
     }
 
+    const std::vector<T> &verts;
+    GLsizei total_element_count;
     GLuint gl_buf;
 
   private:
