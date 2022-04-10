@@ -4,6 +4,10 @@
 #include "input.h"
 #include "command.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui.h"
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -16,8 +20,8 @@
 #include <vector>
 
 static const char *WINDOW_NAME = "Course Creator Tool";
-static const unsigned WINDOW_WIDTH = 640;
-static const unsigned WINDOW_HEIGHT = 480;
+static const unsigned WINDOW_WIDTH = 1280;
+static const unsigned WINDOW_HEIGHT = 720;
 
 static const std::vector<float> vertices = {
   //   x      y        z       r     g     b
@@ -125,9 +129,18 @@ int main() {
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwSwapInterval(1);
 
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetCursorPosCallback(window, mouse_callback);
+
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO &io = ImGui::GetIO(); (void)io;
+
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init("#version 330");
+
+  bool show_demo_window = true;
 
   Program prog{vertex_shader_source, fragment_shader_source};
   prog.add_attrib("a_pos", 3, GL_FLOAT);
@@ -141,25 +154,38 @@ int main() {
 
 	while (!glfwWindowShouldClose(window))
 	{
+		glfwPollEvents();
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
     float t = glfwGetTime();
-
     input.process_commands();
-
     mvp = calculate_mvp(t);
+
+		glUseProgram(prog.gl_program);
+    prog.set_uniform("mvp", (const GLfloat *)&mvp);
+		glDrawArrays(GL_TRIANGLES, 0, vert_buf.total_element_count);
+
+    if (show_demo_window) {
+      ImGui::ShowDemoWindow(&show_demo_window);
+    }
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(prog.gl_program);
-    prog.set_uniform("mvp", (const GLfloat *)&mvp);
-
-		glDrawArrays(GL_TRIANGLES, 0, vert_buf.total_element_count);
-
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
+
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
 
 	glfwDestroyWindow(window);
 

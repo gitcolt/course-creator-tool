@@ -1,7 +1,7 @@
 TARGET_BIN = main
-INCLUDES = -I./glad/include
+INCLUDES = -I./glad/include -I./imgui/include
 LDFLAGS = -lglfw -lGL -lm
-SRC_DIRS = src glad/src
+SRC_DIRS = src glad/src imgui/src
 SRCS = $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c)
 BUILD_DIR = build
 OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
