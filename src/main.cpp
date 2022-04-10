@@ -1,6 +1,6 @@
 #include "camera.h"
-#include "math_helpers.h"
-#include "gl_helpers.h"
+#include "math_utils.h"
+#include "gl_utils.h"
 #include "input.h"
 #include "command.h"
 

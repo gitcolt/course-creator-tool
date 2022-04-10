@@ -1,5 +1,5 @@
 #include "camera.h"
-#include "math_helpers.h"
+#include "math_utils.h"
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch) :
   pos(pos),
