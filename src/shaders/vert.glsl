@@ -1,12 +1,13 @@
 R"glsl(
 #version 330
-uniform mat4 mvp;
-in vec3 a_color;
+in vec2 a_uv;
 in vec3 a_pos;
-out vec3 color;
+out vec2 uv;
+
+uniform mat4 mvp;
 
 void main() {
   gl_Position = mvp * vec4(a_pos, 1.0);
-  color = a_color;
+  uv = a_uv;
 }
 )glsl"

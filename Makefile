@@ -1,5 +1,5 @@
 TARGET_BIN = main
-INCLUDES = -I./glad/include -I./imgui/include
+INCLUDES = -I./glad/include -I./imgui/include -I./stb_image
 LDFLAGS = -lglfw -lGL -lm
 SRC_DIRS = src glad/src imgui/src
 SRCS = $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c)

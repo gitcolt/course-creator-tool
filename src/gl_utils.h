@@ -1,3 +1,6 @@
+#ifndef GL_UTILS_H
+#define GL_UTILS_H
+
 #include <glad/glad.h>
 
 #include <string>
@@ -5,6 +8,10 @@
 #include <type_traits>
 #include <iostream>
 #include <algorithm>
+
+extern "C" {
+  unsigned char *stbi_load(const char *, int *x, int *y, int *channels_in_file, int desired_channels);
+}
 
 enum ShaderType {
   VERTEX,
@@ -120,6 +127,30 @@ class Buffer {
       }
     }
 
+    void load_texture(const char *image_path) {
+      glBindVertexArray(vao);
+      int img_width, img_height, num_channels;
+      unsigned char *img_data  = stbi_load(image_path,
+                                             &img_width, &img_height,
+                                             &num_channels,
+                                             0);
+      if (!img_data) {
+        fprintf(stderr, "Failed to load image\n");
+        return;
+      }
+
+      unsigned int texture;
+      glGenTextures(1, &texture);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB,
+                   GL_UNSIGNED_BYTE, img_data);
+    }
+
     void update(const std::vector<T> &verts) {
       glBindBuffer(GL_ARRAY_BUFFER, gl_buf);
       glBufferData(GL_ARRAY_BUFFER,
@@ -138,3 +169,4 @@ class Buffer {
     GLuint vao;
 };
 
+#endif

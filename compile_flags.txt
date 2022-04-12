@@ -1,3 +1,4 @@
 -I./glad/include
 -I./imgui/include
+-I./stb_image
 -xc++

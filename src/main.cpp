@@ -24,14 +24,14 @@ static const unsigned WINDOW_WIDTH = 1280;
 static const unsigned WINDOW_HEIGHT = 720;
 
 static const std::vector<float> vertices = {
-  //   x      y        z       r     g     b
-  -100.0f,  0.0f, -100.0f,   1.0f, 0.0f, 0.0f,
-  -100.0f,  0.0f,  100.0f,   0.0f, 1.0f, 0.0f,
-   100.0f,  0.0f, -100.0f,   0.0f, 0.0f, 1.0f,
+  //   x      y        z       u     v  
+  -100.0f,  0.0f, -100.0f,   0.0f, 1.0f,
+  -100.0f,  0.0f,  100.0f,   0.0f, 0.0f,
+   100.0f,  0.0f, -100.0f,   1.0f, 1.0f,
 
-   100.0f,  0.0f, -100.0f,   0.0f, 0.0f, 1.0f,
-  -100.0f,  0.0f,  100.0f,   0.0f, 1.0f, 0.0f,
-   100.0f,  0.0f,  100.0f,   1.0f, 0.0f, 0.0f,
+   100.0f,  0.0f, -100.0f,   1.0f, 1.0f,
+  -100.0f,  0.0f,  100.0f,   0.0f, 0.0f,
+   100.0f,  0.0f,  100.0f,   1.0f, 0.0f,
 };
 
 static Camera camera{glm::vec3{0.0f, 6.0f, 0.0f}};
@@ -144,10 +144,11 @@ int main() {
 
   Program prog{vertex_shader_source, fragment_shader_source};
   prog.add_attrib("a_pos", 3, GL_FLOAT);
-  prog.add_attrib("a_color", 3, GL_FLOAT);
+  prog.add_attrib("a_uv", 2, GL_FLOAT);
   prog.add_uniform("mvp", GL_FLOAT_MAT4);
 
   Buffer<float> vert_buf{prog, vertices};
+  vert_buf.load_texture("grass.jpg");
 
   glm::mat4 v = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
   glm::mat4 mvp = p * v * m;
@@ -189,7 +190,8 @@ int main() {
       draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
       draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
-      ImGui::InvisibleButton("canvas", canvas_size, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
+      ImGui::InvisibleButton("canvas", canvas_size,
+          ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
       const bool is_hovered = ImGui::IsItemHovered();
       const bool is_active = ImGui::IsItemActive();
       const ImVec2 origin(canvas_p0.x + scrolling.x, canvas_p0.y + scrolling.y);
@@ -207,7 +209,8 @@ int main() {
       }
 
       const float mouse_threshold_for_pan = opt_enable_context_menu ? -1.0f : 0.0f;
-      if (is_active && ImGui::IsMouseDragging(ImGuiMouseButton_Right, mouse_threshold_for_pan)) {
+      if (is_active &&
+          ImGui::IsMouseDragging(ImGuiMouseButton_Right, mouse_threshold_for_pan)) {
         scrolling.x += io.MouseDelta.x;
         scrolling.y += io.MouseDelta.y;
       }
@@ -219,8 +222,10 @@ int main() {
         if (adding_line)
           points.resize(points.size() - 2);
         adding_line = false;
-        if (ImGui::MenuItem("Remove one", NULL, false, points.Size > 0)) { points.resize(points.size() - 2); }
-        if (ImGui::MenuItem("Remove all", NULL, false, points.Size > 0)) { points.clear(); }
+        if (ImGui::MenuItem("Remove one", NULL, false, points.Size > 0))
+          points.resize(points.size() - 2);
+        if (ImGui::MenuItem("Remove all", NULL, false, points.Size > 0))
+          points.clear();
         ImGui::EndPopup();
       }
 
@@ -228,12 +233,18 @@ int main() {
       if (opt_enable_grid) {
         const float GRID_STEP = 64.0f;
         for (float x = fmodf(scrolling.x, GRID_STEP); x < canvas_size.x; x += GRID_STEP)
-          draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y), ImVec2(canvas_p0.x + x, canvas_p1.y), IM_COL32(200, 200, 200, 40));
+          draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y),
+                             ImVec2(canvas_p0.x + x, canvas_p1.y),
+                             IM_COL32(200, 200, 200, 40));
         for (float y = fmodf(scrolling.y, GRID_STEP); y < canvas_size.y; y += GRID_STEP)
-          draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y), ImVec2(canvas_p1.x, canvas_p0.y + y), IM_COL32(200, 200, 200, 40));
+          draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y),
+                             ImVec2(canvas_p1.x, canvas_p0.y + y),
+                             IM_COL32(200, 200, 200, 40));
       }
       for (int n = 0; n < points.Size; n += 2)
-        draw_list->AddLine(ImVec2(origin.x + points[n].x, origin.y + points[n].y), ImVec2(origin.x + points[n + 1].x, origin.y + points[n + 1].y), IM_COL32(255, 255, 0, 255), 2.0f);
+        draw_list->AddLine(ImVec2(origin.x + points[n].x, origin.y + points[n].y), 
+                           ImVec2(origin.x + points[n + 1].x, origin.y + points[n + 1].y), 
+                           IM_COL32(255, 255, 0, 255), 2.0f);
       draw_list->PopClipRect();
 
       ImGui::End();
