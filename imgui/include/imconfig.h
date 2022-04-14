@@ -83,8 +83,8 @@
 // This will be inlined as part of ImVec2 and ImVec4 class declarations.
 #include "../src/math_utils.h"
 #define IM_VEC2_CLASS_EXTRA                                                     \
-        constexpr ImVec2(const Point& f) : x(f.x), y(f.y) {}                   \
-        operator Point() const { return Point{x, y}; }
+        constexpr ImVec2(const Point2D& f) : x(f.x), y(f.y) {}                    \
+        operator Point2D() const { return Point2D{x, y}; }
 
 /*
 #define IM_VEC4_CLASS_EXTRA                                                     \

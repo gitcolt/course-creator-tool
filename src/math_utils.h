@@ -3,17 +3,17 @@
 
 #include <algorithm>
 
-struct Point {
-  Point operator*(const float scalar);
+struct Point2D {
+  const Point2D operator*(const float scalar) const;
   float x;
   float y;
 };
 
-#include "imgui.h"
-
 float deg_to_rad(float deg);
 
-Point interpolate(float t, Point p0, Point p1, Point p2, Point p3);
+float dist(const Point2D p0, const Point2D p1);
+
+Point2D interpolate(float t, const Point2D p0, const Point2D p1, const Point2D p2, const Point2D p3);
 
 template <typename T>
 T clamp(const T& x, const T& min_val, const T& max_val) {
