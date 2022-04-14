@@ -10,7 +10,8 @@
 #include <algorithm>
 
 extern "C" {
-  unsigned char *stbi_load(const char *, int *x, int *y, int *channels_in_file, int desired_channels);
+  unsigned char *stbi_load(const char *, int *x, int *y, int *channels_in_file,
+                           int desired_channels);
 }
 
 enum ShaderType {
