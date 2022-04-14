@@ -4,6 +4,7 @@
 #include <algorithm>
 
 struct Point2D {
+  const Point2D operator+(const Point2D &othe) const;
   const Point2D operator*(const float scalar) const;
   float x;
   float y;
